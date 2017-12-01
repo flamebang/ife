@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<script>
+	// 获取网页当中所有标签里面的文本
+    var array = [];
+    onload = function ()
+    {
+        var tags = document.body.getElementsByTagName ('*');
+        for ( var i = 0; i < tags.length; i++)
+        {
+            array.push (getText (tags[i]));
+        }
+        console.log (array);
+    }
+    
+    // 获取去除子元素后的文本
+    var getText = function (dom)
+    {
+        var index = 0, html = dom.innerHTML;
+        while (dom.children.length && index < dom.children.length)
+        {
+            var chtml = dom.children[index].outerHTML;
+            html = dom.innerHTML.replace(chtml, '');
+            index++;
+        }
+        return "<font>" + html + "</font>";
+    }
+</script>
+</head>
+<body>
+
+    <p>
+        ths is p<a href="">this is a</a>wyz
+    </p>
+    <i>this is i</i>
+    <b>this is b</b>
+
+<!-- <a href="https://zhidao.baidu.com/question/2117381863984774907.html">获取网页当中所有标签里面的文本</a> -->
+</body>
+</html>
+
+
+
+
+
+
+
+

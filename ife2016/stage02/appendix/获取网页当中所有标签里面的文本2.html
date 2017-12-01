@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<script>
+	// 获取网页当中所有标签里面的文本
+	// 如当中间有个标签的时候该怎么加判断呢？，比如<span>text<i></i>next</span>需要将span里面的text和next分开放，i标签里面的字符也是单独的
+/*	
+    var array = [];
+    onload = function ()
+    {
+        var tags = document.body.getElementsByTagName ('*');
+        for ( var i = 0; i < tags.length; i++)
+        {
+            array.push (getText (tags[i]));
+        }
+        console.log (array);
+    }
+    
+    // 获取去除子元素后的文本
+    var getText = function (dom)
+    {
+        var index = 0, html = dom.innerHTML;
+        while (dom.children.length && index < dom.children.length)
+        {
+            var chtml = dom.children[index].outerHTML;
+            html = dom.innerHTML.replace(chtml, '');
+            index++;
+        }
+        return "<font>" + html + "</font>";
+    }
+*/
+
+
+	var array = [];
+    onload = function ()
+    {
+        var tags = document.body.getElementsByTagName ('*');
+        for ( var i = 0; i < tags.length; i++)
+        {
+            var text = getText (tags[i]);
+            for ( var j = 0; j < text.length; j++)
+            {
+                array.push (text[j]);
+            }
+        }
+        console.log (array);
+    }
+     
+    var getText = function (dom)
+    {
+        var index = 0, html = dom.innerHTML, array = [], val = "";
+        while (!!dom.children.length && index < dom.children.length)
+        {
+            var chtml = dom.children[index].outerHTML;
+            html = dom.innerHTML.replace (chtml, '|');
+            var txt = html.split ("|");
+            for ( var i = 0; i < txt.length; i++)
+            {
+                if (!!txt[i].replace(/^\s+|\s+$/g, ''))
+                {
+                    array.push ("<font>" + txt[i] + "</font>");
+                }
+            }
+            index++;
+        }
+        if (!dom.children.length)
+        {
+            array.push ("<font>" + html + "</font>");
+        }
+        return array;
+    }
+
+
+
+
+
+
+
+
+</script>
+</head>
+<body>
+
+    <p>
+        ths is p<a href="">this is a</a>wyz
+    </p>
+    <i>this is i</i>
+    <b>this is b</b>
+
+	<span>text<i>aaaaaaaaaaaa</i>next</span>
+<!-- <a href="https://zhidao.baidu.com/question/2117381863984774907.html">获取网页当中所有标签里面的文本</a> -->
+</body>
+</html>
+
+
+
+
+
+
+
+

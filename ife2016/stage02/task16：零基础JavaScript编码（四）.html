@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<!-- <script src="task.js"></script> -->
+<style>
+  tr {
+    display: block;
+  }
+</style>
+</head>
+<body>
+
+
+  <div>
+    <label>城市名称：<input id="aqi-city-input" type="text"></label><br>
+    <label>空气质量指数：<input id="aqi-value-input" type="text"></label><br>
+    <button id="add-btn">确认添加</button>
+  </div>
+
+
+  <table id="aqi-table">
+  </table>
+<script>
+(function() {
+  var aqiData = {};
+  // 从用户输入中获取数据，向aqiData中增加一条数据
+  // 然后渲染aqi-list列表，增加新增的数据
+  function addAqiData() {
+    var oCity = document.getElementById('aqi-city-input');
+    var oAir = document.getElementById('aqi-value-input');
+    aqiData[oCity.value] = oAir.value;
+    console.log(oCity.value);
+    console.log(oAir.value);
+    // console.log(aqiData);
+  }
+
+  // 渲染aqi-table表格
+  function renderAqiList() {
+    console.log(aqiData);
+    var oTable = document.getElementById('aqi-table');
+    var oTr = document.createElement('tr');
+    for(var key in aqiData) {
+      if(!oTr.length) {
+        oTr.innerHTML = '<tr><td>城市</td><td>空气质量</td><td>操作</td></tr><tr><td>' + key + '</td><td>' + aqiData[key] + '</td><td><button>删除</button></td></tr><tr>  ';
+      }
+      else {
+        oTr.innerHTML = '<tr><td>' + key + '</td><td>' + aqiData[key] + '</td><td><button>删除</button></td></tr><tr>  ';        
+      }
+      oTable.appendChild(oTr);
+    }
+
+
+  }
+  // 点击add-btn时的处理逻辑
+  // 获取用户输入，更新数据，并进行页面呈现的更新
+  function addBtnHanle() {
+    addAqiData();
+    renderAqiList();
+  }
+  // 点击各个删除按钮的时候的处理逻辑
+  // 获取哪个城市数据被删，删除数据，更新表格显示
+  function delBtnHandle() {
+
+  }
+  function init() {
+    var oBtn = document.getElementById('add-btn');
+    oBtn.onclick = function() {
+      addBtnHanle();
+    }
+    // 在这下面给add-btn绑定一个点击事件，点击时触发addBtnHandle函数
+    // 想办法给aqi-table中的所有删除按钮绑定事件，触发delBtnHandle函数
+  }
+
+  init();
+
+})();
+
+
+</script>
+
+
+
+
+
+<!-- 
+  <h3>污染城市列表</h3>
+  <ul id="source">
+      <li>北京空气质量：<b>90</b></li>
+      <li>上海空气质量：<b>70</b></li>
+      <li>天津空气质量：<b>80</b></li>
+      <li>广州空气质量：<b>50</b></li>
+      <li>深圳空气质量：<b>40</b></li>
+      <li>福州空气质量：<b>32</b></li>
+      <li>成都空气质量：<b>90</b></li>
+  </ul>
+  <ul id="resort"></ul>
+  <button id="sort-btn">排序</button>
+  <script>
+  (function() {
+
+    // 读取id为source的列表，获取其中城市名字及城市对应的空气质量，返回一个数组
+    function getData() {
+      var data = [];
+      var numData = [];
+      var oUl = document.getElementById('source'),
+          oLi = oUl.getElementsByTagName('li');
+      for(var i = 0; i < oLi.length; i++) {
+        data.push(getText(oLi[i]));
+      }
+      return data;
+    }
+
+    // 从每个li中提取所需数据
+    var getText = function(dom) {
+      var index = 0,
+          arr = new Array(),
+          html = dom.innerHTML,
+          len = dom.children.length;
+      // 生成需要的数组格式
+      while(len && index < len) {
+        var chtml = dom.children[index].outerHTML;
+        var strIndex = html.indexOf('空气质量：');
+          arr = dom.innerHTML.slice(0, strIndex);
+          arr = [].concat(arr, parseInt(chtml.match(/[0-9]+/)));
+        index++;
+      }
+      return arr;
+    };
+
+    // 按空气质量对data进行从小到大的排序，返回一个排序后的数组
+    function sortAqiData(data) {
+      var arr = [];
+      var sortData = [];
+      for(var i = 0; i < data.length; i++) {
+        arr.push(data[i][1]);
+      }
+      // 获取空气质量评分排序
+      arr.sort(function(a, b) {
+        return parseInt(a) - parseInt(b);
+      });
+      // console.log(arr);
+
+      // 根据评分排序匹配生成相应的排序数组
+      for(var i = 0; i < data.length; i++) {
+        // label:
+        for(var j = 0; j < data.length; j++) {
+          if(arr[i] === data[j][1]) {
+            sortData.push(data[j]);
+            // break label;
+          }
+        }
+      }
+      // 数组去重
+      for(var i = 0; i < sortData.length; i++) {
+        for(var j = i + 1; j < sortData.length; j++) {
+          if(sortData[i][0] == sortData[j][0]) {
+            sortData.splice(j, 1);
+            j--;
+          }        
+        }
+      }
+      return sortData;
+    }
+
+    // 将排好序的城市及空气质量指数，输出显示到id位resort的列表中
+    function render(data) {
+      var oReset = document.getElementById('resort');
+      var arrRank = ["第一名","第二名","第三名","第四名","第五名","第六名","第七名"]
+      for(var i = 0, len = data.length; i < len; i++) {
+        var oLi = document.createElement('li');
+        oLi.innerHTML = arrRank[i] + '：' + data[i][0] + '空气质量：<b>' + data[i][1] + '</br>';
+        oReset.appendChild(oLi);
+      }
+    }
+
+    // 数据传递
+    function btnHandle() {
+      var aqiData = getData();
+      aqiData = sortAqiData(aqiData);
+      render(aqiData);
+    }
+
+    // 初始化
+    function init() {
+      var oBtn = document.getElementById('sort-btn');
+      oBtn.onclick = function() {
+        btnHandle();
+      }
+    }
+
+    // 调用init函数
+    init();
+
+  })();
+ -->
+
+</script>
+</body>
+</html>
+
+
+
+4、第三期 八分钟学会撰写工作计划表
+5、第四期 六分钟学会开通新媒体空间
+6、第五期 十一分钟学会撰写栏目方案策划书
+7、第六期 六分钟学会图文排版
+
+https://upos-hz-mirrorks3.acgvideo.com/upgcxcode/43/16/11781643/11781643-1-80.flv?e=ig8g5X10ugNcXBlqNxHxNEVE5XREto8KqJZHUa6m5J0SqE85tZvEuENvNC8xNEVE9EKE9IMvXBvE2ENvNCImNEVEK9GVqJIwqa80WXIekXRE9IMvXBvEuENvNCImNEVEua6m2jIxux0CkF6s2JZv5x0DQJZY2F8SkXKE9IB5to8euxZM2rNcNbUVhwdVhoM1hwdVhwdVNCM%3D&platform=pc&uipk=5&uipv=5&deadline=1512155845&gen=playurl&um_deadline=1512155845&rate=365202&um_sign=3eb3858853f34e30c1f5bccfe1ec8194&dynamic=1&os=ks3&oi=1901878285&hfb=Yjk5ZmZjM2M1YzY4ZjAwYTMzMTIzYmIyNWY4ODJkNWI%3D&upsig=eea5767ef5f718aab8593811a6ccd6c6
+
+
+
+
+
