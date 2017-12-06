@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<style>
+  #ul {
+    list-style-type: none; 
+    /*border: 1px solid #000;*/
+  }
+  .clearfix:after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+  .clearfix {
+    zoom: 1;
+  }
+  #ul li {
+    float: left; 
+    height: 20px; 
+    padding: 5px 15px; 
+    margin: 0 5px 5px 0; 
+    line-height: 20px; 
+    background-color: #ff0000; 
+    color: #fff;
+  }
+  button {
+    border: none;
+    outline: none;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+
+
+<input type="text" id="txt" value="">
+<button id="leftInput">左侧输入</button>
+<button id="rightInput">右侧输入</button>
+<button id="leftOut">左侧出</button>
+<button id="rightOut">右侧出</button>
+<ul id="ul" class="clearfix">
+<!--   
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li> -->
+</ul>
+<script>
+(function() {
+  var get = function (node) {
+    return document.getElementById(node);
+  };
+  var addHandler = function (elem, eventType, handler) {
+    if(elem.addEventListener) {
+      elem.addEventListener(eventType, handler, false);
+      return true;
+    }
+    else if(elem.attachEvent) {
+      elem.attachEvent('on' + eventType, function () {
+        handler.apply(elem);
+      });
+      return true;
+    }
+    return false;
+  };
+  var isNum = function (str) {
+    if(str != null && str != '') {
+      return !isNaN(str);
+    }
+    return false;
+  };
+
+
+  var arr = [];
+  var str = '';
+  var ul = get('ul');
+  var txt = get('txt');
+  // 小方块的增加与改动
+  function brickChange() {
+    var li = get('leftInput');
+    var ri = get('rightInput');
+    var lo = get('leftOut');
+    var ro = get('rightOut');
+    addHandler(li, 'click', function() {
+      arr.unshift(txt.value);
+      arrChange();
+    });
+    addHandler(ri, 'click', function() {
+      arr.push(txt.value);
+      arrChange();
+    });
+    addHandler(lo, 'click', function() {
+      arr.shift(txt.value);
+      arrChange();
+    });
+    addHandler(ro, 'click', function() {
+      arr.pop(txt.value);
+      arrChange();
+    });
+  }
+
+  // 根据arr内容生成小方块
+  function arrChange() {
+    for(var i = 0; i < arr.length; i++) {
+      str += '<li>' + arr[i] + '</li>';
+    }
+    ul.innerHTML = str;
+    str = '';
+    txt.value = '';
+  }
+  function start() {
+    addHandler(txt, 'blur', function () {
+      if(!(/^\d+$/.test(txt.value))) {
+        alert('输入有误');
+        return;
+      }
+    });
+    brickChange();
+  }
+  start();
+
+
+
+
+
+/*
+
+  // 获取子元素在父元素中的位置
+  var getChildrenIndex = function (elem) {
+    // IE is simplest and fastest 
+    if(elem.sourceIndex) {
+      return elem.sourceIndex - elem.parentNode.sourceIndex - 1;
+    }
+    // other browsers 
+    var i = 0; 
+    while(elem = elem.previousElementSibling) {
+      i++;
+    }
+    return i;
+  }
+
+  var oTxt = get('txt');
+  var oUl = get('ul');
+  var lInput = get('leftInput');
+  var rInput = get('rightInput');
+  var lOut = get('leftOut');
+  var rOut = get('rightOut');
+  addHandler(lInput, 'click', leftInput);
+  addHandler(rInput, 'click', rightInput);
+  addHandler(lOut, 'click', leftOut);
+  addHandler(rOut, 'click', rightOut);
+  addHandler(oTxt, 'keyup', getVal);
+  addHandler(oUl, 'click', removeQue);
+
+  // 左侧输入
+  function leftInput() {
+    addDir('li');
+  }
+  // 右侧输入
+  function rightInput() {
+    addDir('ri');
+  }
+  // 添加子元素
+  function addDir(dirIo) {
+    var val = getVal(txt);
+    var oLi = document.createElement('li');
+    var textNode = document.createTextNode(val);
+    oLi.appendChild(textNode);
+
+    if(val.length == 0) {
+      alert('输入不能为空！');
+      return;
+    }
+    if(!isNum(val)) {
+      alert('请输入数字!');
+      return;
+    }
+
+    if(dirIo === 'li') {
+      oUl.insertBefore(oLi, oUl.childNodes[0]);
+    }
+    else if(dirIo === 'ri') {
+      oUl.appendChild(oLi); 
+    }
+
+
+    oTxt.value = '';
+  }
+  //获取input节点的value
+  function getVal(node) {
+    return node.value;
+  }
+  // 左侧出
+  function leftOut() {
+    removeDir('lo');
+  }
+  // 右侧出
+  function rightOut() {
+    removeDir('ro');
+  }
+  // 删除子元素
+  function removeDir(dirIo) {
+    if(dirIo === 'lo') {
+      var txtCont1 = oUl.firstChild.innerHTML;
+      console.log(txtCont1);
+      oUl.firstChild ? oUl.removeChild(oUl.firstChild) : false;
+      alert(txtCont);
+      return;
+    }
+    else if(dirIo === 'ro') {
+      var txtCont2 = oUl.lastChild.innerHTML;
+      oUl.lastChild ? oUl.removeChild(oUl.lastChild) : false;
+      alert(txtCont2);
+      return;
+    }   
+  }
+  // 点击队列中任何一个元素，则该元素会被从队列中删除(点击的子元素是父元素的第？个)
+  function removeQue(e) {
+    var e = e || window.event;
+    var elemTarget = e.target || e.sreElement;
+    var index = getChildrenIndex(elemTarget);
+    return index >= 0 ? oUl.removeChild(oUl.childNodes[index]) : false;
+  }
+
+*/
+
+})();
+
+
+</script>
+</body>
+</html>

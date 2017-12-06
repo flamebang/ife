@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<style>
+  #ul {
+    list-style-type: none; 
+    padding: 10px;
+    /*border: 1px solid #000;*/
+  }
+  .clearfix:after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+  .clearfix {
+    zoom: 1;
+  }
+  #ul li {
+    float: left;
+    position: relative; 
+    width: 25px; 
+    height: 300px;
+    margin: 0 5px 5px 0; 
+    text-align: center;
+    /*border: 1px solid #000;*/
+  }
+  #ul li a {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    /*height: 30px;*/
+    background-color: #ff0000;
+  }
+  button {
+    border: none;
+    outline: none;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+
+
+<input type="text" id="txt" value="">
+<button id="leftInput">左侧输入</button>
+<button id="rightInput">右侧输入</button>
+<button id="leftOut">左侧出</button>
+<button id="rightOut">右侧出</button>
+<button id="random">随机生成排序</button>
+<button id="bubble">冒泡排序</button>
+<ul id="ul" class="clearfix">
+<!--   
+<li><a href="javascript:void(0);">d</a></li>
+<li><a href="javascript:void(0);">d</a></li>
+<li><a href="javascript:void(0);">4</a></li>
+<li><a href="javascript:void(0);">3</a></li>
+<li><a href="javascript:void(0);">3</a></li>
+<li><a href="javascript:void(0);">3</a></li>
+<li><a href="javascript:void(0);">3</a></li>
+<li><a href="javascript:void(0);">3</a></li> -->
+</ul>
+<script>
+(function() {
+
+  var get = function (node) {
+    return document.getElementById(node);
+  };
+  var addHandler = function (elem, eventType, handler) {
+    if(elem.addEventListener) {
+      elem.addEventListener(eventType, handler, false);
+      return true;
+    }
+    else if(elem.attachEvent) {
+      elem.attachEvent('on' + eventType, function () {
+        handler.apply(elem);
+      });
+      return true;
+    }
+    return false;
+  };
+  var isNum = function (str) {
+    if(str != null && str != '') {
+      return !isNaN(str);
+    }
+    return false;
+  };
+  // 获取子元素在父元素中的位置
+  var getChildrenIndex = function (elem) {
+    // IE is simplest and fastest 
+    if(elem.sourceIndex) {
+      return elem.sourceIndex - elem.parentNode.sourceIndex - 1;
+    }
+    // other browsers 
+    var i = 0; 
+    while(elem = elem.previousElementSibling) {
+      i++;
+    }
+    return i;
+  }
+
+  var oTxt = get('txt');
+  var oUl = get('ul');
+  var lInput = get('leftInput');
+  var rInput = get('rightInput');
+  var lOut = get('leftOut');
+  var rOut = get('rightOut');
+  var oRand = get('random');
+  var oBubble = get('bubble');
+  addHandler(lInput, 'click', leftInput);
+  addHandler(rInput, 'click', rightInput);
+  addHandler(lOut, 'click', leftOut);
+  addHandler(rOut, 'click', rightOut);
+  addHandler(oUl, 'click', removeQue);
+
+  // function randomBrick() {
+  //   var arr = [];
+
+  //   return arr;
+  // }
+
+  // 左侧输入
+  function leftInput() {
+    addDir('li');
+  }
+  // 右侧输入
+  function rightInput() {
+    addDir('ri');
+  }
+  function setHeight(obj, value) {
+    obj.style.height = (value*2) + 'px';
+    console.log(obj.style.height);
+  }
+  // 添加子元素
+  function addDir(dirIo) {
+    var val = txt.value;
+    var reg =  /[1-9]\d|100/;
+    var oLi = document.createElement('li');
+    var oA = document.createElement('a');
+    oA.innerHTML = val;
+    oLi.appendChild(oA);
+    setHeight(oA, val);
+
+    if(val.length == 0) {
+      alert('输入不能为空！');
+      return;
+    }
+    if(!isNum(val)) {
+      alert('请输入数字!');
+      return;
+    }
+    // 限制输入的数字在10-100
+    if(!reg.test(parseInt(val))) {
+      alert('请输入10~100的整数')
+      return;
+    }
+
+    if(dirIo === 'li') {
+      oUl.insertBefore(oLi, oUl.childNodes[0]);
+    }
+    else if(dirIo === 'ri') {
+      oUl.appendChild(oLi); 
+    }
+    // 队列元素数量最多限制为60个，当超过60个时，添加元素时alert出提示
+    var len = oUl.getElementsByTagName('li').length;
+    if(len >= 60) {
+      alert('队列元素个数为：' + len + '个');
+    }
+
+    // console.log(oUl.getElementsByTagName('li').length);
+// 　  document.getElementById("test").ChildNodes.length childNodes属性获得包含文本节点的子节点，但是firefox和ie不一样 firefox会获得空节点
+// 　　document.getElementById('test').children.length  children属性能获得所有的子元素节点
+
+    oTxt.value = '';
+  }
+  // 左侧出
+  function leftOut() {
+    removeDir('lo');
+  }
+  // 右侧出
+  function rightOut() {
+    removeDir('ro');
+  }
+  // 删除子元素
+  function removeDir(dirIo) {
+    if(dirIo === 'lo') {
+      var txtCont1 = oUl.firstChild.innerHTML;
+      console.log(txtCont1);
+      oUl.firstChild ? oUl.removeChild(oUl.firstChild) : false;
+      alert(txtCont);
+      return;
+    }
+    else if(dirIo === 'ro') {
+      var txtCont2 = oUl.lastChild.innerHTML;
+      oUl.lastChild ? oUl.removeChild(oUl.lastChild) : false;
+      alert(txtCont2);
+      return;
+    }   
+  }
+  // 点击队列中任何一个元素，则该元素会被从队列中删除(点击的子元素是父元素的第？个)
+  function removeQue(e) {
+    var e = e || window.event;
+    var elemTarget = e.target || e.sreElement;
+    var index = getChildrenIndex(elemTarget);
+    return index >= 0 ? oUl.removeChild(oUl.childNodes[index]) : false;
+  }
+  addHandler(oBubble, 'click', bubbleSort);
+  function  bubbleSort(arr) {
+    for(var i = 0; i < arr.length - 1; i++) {
+      for(var j = 0; j < arr.length - 1; j++) {
+        if(arr[j] > arr[j+1]) {
+          var temp = arr[j];
+          arr[j] = arr[j+1];
+          arr[j+1] = temp;
+        }
+      }
+      console.log('arr ' + arr)
+    }
+    return arr;
+  }
+})();
+
+
+  function  bubbleSort(arr) {
+
+
+    // for(var i = 0; i < arr.length - 1; i++) {
+    //   for(var j = 0; j < arr.length - 1; j++) {
+    //     console.log('arr[' + (j) + ']的值是 ' + arr[j] + '   arr[' + (j+1) + ']的值是   ' + arr[(j+1)]);
+    //     if(arr[j] > arr[j+1]) {
+    //       var temp = arr[j];
+    //       arr[j] = arr[j+1];
+    //       arr[j+1] = temp;
+    //     }
+    //   }
+    //   console.log('arr ' + arr)
+    // }
+
+    var i = 0, j = 0, len = arr.length;
+    if(i < len - 1) {
+      if(j == len - 1 - i) {
+        j = 0;
+        i++;
+      }
+      if(arr[j] > arr[j+1]) {
+        var temp = arr[j];
+        arr[j] = arr[j+1];
+        arr[j+1] = temp;
+      }
+      j++;
+      console.log(j);
+    }
+
+    return arr;
+  }
+  var arr = [10, 9, 7, 5, 4];
+  console.log(bubbleSort(arr));
+
+
+</script>
+</body>
+</html>

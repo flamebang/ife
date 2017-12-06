@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+	ul {
+		list-style: none;
+		overflow: hidden;
+	}
+	.clearfix:after {
+		display: block;
+		clear: both;
+		content: '';
+	}
+	.clearfix {
+		zoom: 1;
+	}
+	#ul li {
+		float: left;
+		position: relative;
+		width: 40px;
+		height: 40px;
+		line-height: 40px;
+		margin: 0 5px;
+		font-size: 16px;
+		text-align: center;
+		background-color: #ff0000;
+		color: #fff;
+		vertical-align: bottom;
+	}
+
+</style>
+</head>
+<body>
+<input type="text" value="" id="txt" />
+<button id="leftInput">左侧入</button>
+<button id="rightInput">右侧入</button>
+<button id="leftOut">左侧出</button>
+<button id="rightOut">右侧出</button>
+<button id="random">随机生成数字</button>
+<button id="bubbSort">冒泡排序</button>
+<ul id="ul" class="clearfix"></ul>
+<script>
+(function () {
+	var get = function (node) {
+		return document.getElementById(node);
+	};
+	var data = [];
+	var txt = get('txt');
+	var ul = get('ul');
+	function leftInput() {
+		console.log(txt.value)
+		inputLimit();
+		data.unshift(txt.value);
+		generateView();
+	}
+	function rightInput() {
+		inputLimit();
+		data.push(txt.value);
+		generateView();
+	}
+	function leftOut() {
+		var shiftNum = data.shift();
+		generateView();
+		outputLimit(shiftNum);
+	}
+	function rightOut() {
+		var popNum = data.pop();
+		generateView();
+		outputLimit(popNum);
+	}
+	// 输入限制
+	function inputLimit() {
+		var reg1 = /^\s*$/g;
+		var reg2 = /^[0-9]*$/g
+		if(txt.vaue == '' || reg1.test(txt.value)) {
+			alert('输入不能为空');
+			return false;
+		}
+		if(!reg2.test(txt.value)) {
+			alert('请输入数字');
+			return false;
+		}
+		return true;
+	}
+	// 输出限制
+	function outputLimit(obj) {
+		if(obj == undefined) {
+			return;
+		}
+		alert(obj);
+	}
+
+	// 生成视图
+	function generateView() {
+		var str = '';
+		for(var i = 0; i < data.length; i++) {
+			str += "<li>" + data[i] + '</li>';
+		}
+		ul.innerHTML = str;
+		txt.value = ' ';
+	}
+	// function getChildrenIndex(ele) {
+	// 	var index = 0;
+	// 	var node = ele.previousSibling;
+	// 	while(node) {
+	// 		if(node.nodeType == 1) {
+	// 			index++;
+	// 		}
+	// 	}
+	// 	return index;
+	// }
+	// 查找子元素在父元素中的索引
+	function getChildrenIndex(elem) {
+		if(elem.sourceIndex) {
+			return elem.sourceIndex - elem.parentNode.sourceIndex - 1;
+		}
+		var i = 0;
+		while(elem = elem.previousElementSibling) {
+			i++;
+		}
+		return i;
+	}
+	function removeBrick(e) {
+		var e = e || window.event;
+		var elem = e.target || e.srcElement;
+		if(elem.tagName.toLowerCase() == 'li') {
+			var index = getChildrenIndex(elem);
+			data.splice(index, 1);
+			generateView();
+		}
+	}
+	function init() {
+		var li = get('leftInput');
+		var ri = get('rightInput');
+		var lo = get('leftOut');
+		var ro = get('rightOut');
+		li.onclick = leftInput;
+		ri.onclick = rightInput;
+		lo.onclick = leftOut;
+		ro.onclick = rightOut;
+		ul.onclick = removeBrick;
+	}
+	init();
+
+
+
+
+
+
+/*
+
+	var timer = null;
+	var count1 = 0;
+	var count2 = 0;
+	var result = [];
+	var retArr = [];
+	// 生成随机数数组（产生数据源）
+	function getRandomArray() {
+		var arr = [];
+		var n = Math.floor(Math.random() * 16 + 20);
+		while(arr.length < n) {
+			var randomNum = Math.floor(Math.random() * 271) + 30;
+			if(arr.indexOf(randomNum) < 0) {
+				arr.push(randomNum);
+			}
+		}
+		return arr;
+	}
+	// 生成随机数数组示意图（设置li高度）
+	function setLi(arr) {
+		var ul = get('ul');
+		var str = '';
+		var len = arr.length;
+		for(var i = 0; i < len; i++) {
+			str += "<li><a href='javascript:void(0);' style=height:" + arr[i] +  'px >' + Math.floor(arr[i]/3) + '</a></li>';
+		}
+		ul.innerHTML = str;
+	}
+	// 冒泡动态图
+	function setChart(arr) {
+		var newArr = result.shift() || [];
+		setLi(newArr);
+		count2++;
+		if(count2 == count1) {
+			clearInterval(timer);
+		}
+	}	
+	// 冒泡排序（将每次排序后的结果存储到result中，统计排序的次数count1）
+	function  bubbleSort(arr) {
+		for(var i = 0, len = arr.length, n = 0; i < len - 1; i++) {
+		  for(var j = 0; j < len - 1 - i; j++) {
+		  	  if(arr[j] > arr[j+1]) {
+		      var temp = arr[j];
+		      arr[j] = arr[j+1];
+		      arr[j+1] = temp;
+		      result.push(arr.slice(0));
+		      count1++;
+		    }
+		  }
+		}
+		// console.log(count1);
+	}
+	// 调用setLi函数生成初始化界面
+	function render() {
+		retArr = getRandomArray();
+		setLi(retArr);
+		// console.log(retArr);
+	}
+	// 启用定时器调用setChart函数生成冒泡动态图
+	function dynamicChart() {
+		bubbleSort(retArr);
+		timer = setInterval(function () {
+			setChart(retArr);
+		}, 50);
+	}
+	// 初始化
+	function init() {
+		var rand = get('random');
+		var bubble = get('bubbSort');
+		var compare = get('compSort');
+		var quick = get('quickSort');
+		rand.onclick = render;
+		bubble.onclick = dynamicChart;
+	}
+	init();*/
+})();
+
+
+
+</script>
+</body>
+</html>

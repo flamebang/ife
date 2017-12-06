@@ -5,8 +5,8 @@
 <title></title>
 <!-- <script src="task.js"></script> -->
 <style>
-  tr {
-    display: block;
+  tr:first-child {
+    background-color: #00ff00;
   }
 </style>
 </head>
@@ -21,56 +21,127 @@
 
 
   <table id="aqi-table">
+<!--     
+    <tr><td>城市</td><td>空气质量</td><td>操作</td>
+    </tr><tr><td>北京</td><td>90</td><td><button>删除</button></td>
+    </tr>
+ -->
   </table>
 <script>
 (function() {
-  var aqiData = {};
+// 获取dom
+  var get = function(id) {
+    return document.getElementById(id);
+  };
+  var create = function (tag) {
+    return document.createElement(tag);
+  };
+  var trim = function (str) {
+    return str.replace(/(^\s*|\s*$)/, '');
+  };
+  var removeAllChild = function (id) {
+    var elem = get(id);
+    while(elem.hasChildNodes()) {
+      elem.removeChild(elem.firstChild);
+    }
+  };
+  var addHandler = function(elem, eventType, handler) {
+    // var elem = get(id);
+    if(elem.addEventListener) {
+      elem.addEventListener(eventType, handler, false);
+      return true;
+    }
+    else if(elem.attachEvent) {
+      elem.attachEvent('on' + eventType, function () {
+        handler.apply(elem);
+      });
+      return true;
+    }
+    return false;
+  };
+
+  var aqiData = [];
   // 从用户输入中获取数据，向aqiData中增加一条数据
   // 然后渲染aqi-list列表，增加新增的数据
   function addAqiData() {
-    var oCity = document.getElementById('aqi-city-input');
-    var oAir = document.getElementById('aqi-value-input');
-    aqiData[oCity.value] = oAir.value;
-    console.log(oCity.value);
-    console.log(oAir.value);
-    // console.log(aqiData);
+    var oCityVal = get('aqi-city-input').value.trim();
+    var oAirVal = get('aqi-value-input').value.trim();
+    var result = [oCityVal, oAirVal];
+    var value1 = oCityVal.match(/^[\u4e00-\u9fa5a-zA-Z]+$/); // 城市名必须为中英文字符
+    var value2 = oAirVal.match(/^([1-9][0-9]*)$/); // 空气质量指数必须为整数(非负数)
+
+    if(!value1) {
+      alert("您的输入不符，请输入中英文字符");
+    } else if(!value2) {
+      alert('空气质量指数必须为整数');
+      return;
+    }
+    aqiData.push(result);
+    console.log(aqiData);
   }
 
+    var oTable = get('aqi-table');
   // 渲染aqi-table表格
   function renderAqiList() {
-    console.log(aqiData);
-    var oTable = document.getElementById('aqi-table');
-    var oTr = document.createElement('tr');
-    for(var key in aqiData) {
-      if(!oTr.length) {
-        oTr.innerHTML = '<tr><td>城市</td><td>空气质量</td><td>操作</td></tr><tr><td>' + key + '</td><td>' + aqiData[key] + '</td><td><button>删除</button></td></tr><tr>  ';
-      }
-      else {
-        oTr.innerHTML = '<tr><td>' + key + '</td><td>' + aqiData[key] + '</td><td><button>删除</button></td></tr><tr>  ';        
-      }
+    // 生成表头
+    var arr = ['城市', '空气质量', '操作'];
+    var oHead = create('thead');
+    var oHeadTr = create('tr');
+    for(var i = 0; i < arr.length; i++) {
+      var oTd = create('td');
+      oTd.innerHTML = arr[i];
+      oHeadTr.appendChild(oTd);
+    }
+    removeAllChild('aqi-table');
+    oHead.appendChild(oHeadTr);
+    oTable.appendChild(oHead);
+
+    // 生成内容
+    for(var i = 0; i < aqiData.length; i++) {
+      var oTr = create('tr');
+      var oCity = create('td');
+      var oAir = create('td');
+      var oBoxBtn = create('td');
+      var oBtn = create('button');
+      oCity.innerHTML = aqiData[i][0];
+      oAir.innerHTML = aqiData[i][1];
+      oBtn.innerHTML = '删除';
+      oBoxBtn.appendChild(oBtn);
+
+      oTr.appendChild(oCity);
+      oTr.appendChild(oAir);
+      oTr.appendChild(oBoxBtn);
       oTable.appendChild(oTr);
     }
-
 
   }
   // 点击add-btn时的处理逻辑
   // 获取用户输入，更新数据，并进行页面呈现的更新
-  function addBtnHanle() {
+  function addBtnHandle() {
     addAqiData();
     renderAqiList();
   }
   // 点击各个删除按钮的时候的处理逻辑
   // 获取哪个城市数据被删，删除数据，更新表格显示
-  function delBtnHandle() {
+  function delBtnHandle(e) {
+    var e = e || window.event;
+    var oCity = e.target.parentElement.parentElement.firstChild;
+    var oAir = oCity.nextSibling;
+    var j;
+    for(var i = 0; i < aqiData.length; i++) {
+      if(aqiData[i][0] === oCity.innerHTML && aqiData[i][1] === oAir.innerHTML) {
+        j = i;
+        break;
+      }
+    }
+    aqiData.splice(j, 1);
+    renderAqiList();
 
   }
   function init() {
     var oBtn = document.getElementById('add-btn');
-    oBtn.onclick = function() {
-      addBtnHanle();
-    }
-    // 在这下面给add-btn绑定一个点击事件，点击时触发addBtnHandle函数
-    // 想办法给aqi-table中的所有删除按钮绑定事件，触发delBtnHandle函数
+    addHandler(oBtn, 'click', addBtnHandle);
+    addHandler(oTable, 'click', delBtnHandle);
   }
 
   init();
@@ -195,21 +266,5 @@
 
   })();
  -->
-
-</script>
 </body>
 </html>
-
-
-
-4、第三期 八分钟学会撰写工作计划表
-5、第四期 六分钟学会开通新媒体空间
-6、第五期 十一分钟学会撰写栏目方案策划书
-7、第六期 六分钟学会图文排版
-
-https://upos-hz-mirrorks3.acgvideo.com/upgcxcode/43/16/11781643/11781643-1-80.flv?e=ig8g5X10ugNcXBlqNxHxNEVE5XREto8KqJZHUa6m5J0SqE85tZvEuENvNC8xNEVE9EKE9IMvXBvE2ENvNCImNEVEK9GVqJIwqa80WXIekXRE9IMvXBvEuENvNCImNEVEua6m2jIxux0CkF6s2JZv5x0DQJZY2F8SkXKE9IB5to8euxZM2rNcNbUVhwdVhoM1hwdVhwdVNCM%3D&platform=pc&uipk=5&uipv=5&deadline=1512155845&gen=playurl&um_deadline=1512155845&rate=365202&um_sign=3eb3858853f34e30c1f5bccfe1ec8194&dynamic=1&os=ks3&oi=1901878285&hfb=Yjk5ZmZjM2M1YzY4ZjAwYTMzMTIzYmIyNWY4ODJkNWI%3D&upsig=eea5767ef5f718aab8593811a6ccd6c6
-
-
-
-
-

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<style>
+  #ul {
+    list-style-type: none; 
+    /*border: 1px solid #000;*/
+  }
+  .clearfix:after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+  .clearfix {
+    zoom: 1;
+  }
+  #ul li {
+    float: left; 
+    height: 20px; 
+    padding: 5px 15px; 
+    margin: 0 5px 5px 0; 
+    line-height: 20px; 
+    background-color: #ff0000; 
+    color: #fff;
+  }
+  button {
+    border: none;
+    outline: none;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    margin: 0 10px;
+  }
+  input,
+  textarea {
+    outline: none;
+  }
+  span {
+    background-color: #FFF700;
+  }
+</style>
+</head>
+<body>
+
+<div>
+<!-- <textarea id="txt" cols="30" rows="10"> -->
+<p id="txt">
+百度前端技术学院的课程任务是由百度前端工程师专为对前端不同掌握程度的同学设计。我们尽力保证课程内容的质量以及学习难度的合理性，但即使如此，真正决定课程效果的，还是你的每一次思考和实践。
+</p>
+<!-- </textarea> -->
+</div>
+<input type="text" id="searchTxt"><button id="searchBtn">查询</button><button id="clearAll">清除</button>
+<script>
+(function() {
+  var get = function (node) {
+    return document.getElementById(node);
+  };
+  var addHandler = function (elem, eventType, handler) {
+    if(elem.addEventListener) {
+      elem.addEventListener(eventType, handler, false);
+      return true;
+    }
+    else if(elem.attachEvent) {
+      elem.attachEvent('on' + eventType, function () {
+        handler.apply(elem);
+      });
+      return true;
+    }
+    return false;
+  };
+
+  var oTxt = get('txt');
+  var txtStr = oTxt.innerHTML;
+  var oSearchTxt = get('searchTxt');
+
+  // 查找输入目标内容
+  function searchCont() {
+    var val = oSearchTxt.value;
+    oTxt.innerHTML = txtStr.split(val).join('<span>' + val + '</span>');
+  }
+  // 恢复至初始状态
+  function clearAll() {
+    oSearchTxt.value = '';
+    oTxt.innerHTML = txtStr;
+  }
+  // 启动
+  function init() {
+    var oClearAll = get('clearAll');
+    var oSearchBtn = get('searchBtn');
+    addHandler(oClearAll, 'click', clearAll);
+    addHandler(oSearchBtn, 'click', searchCont);
+  }
+  init();
+})();
+</script>
+
+
+
+
+
+
+
+<br/>
+<a href="http://blog.csdn.net/rztyfx/article/details/61914239">textarea字符查找并且高亮显示,兼容Chrome,IE</a><br/>
+<a href="http://blog.csdn.net/zdw_wym/article/details/42468313">js中让字符串中特定字符红色显示</a>
+<br/>
+<a href="http://blog.csdn.net/fanhaiwang520/article/details/7704654">正则test和字符串match--匹配问题</a>
+
+
+</body>
+</html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+	.kw {
+		background-color: #f00; 
+		color: #fff;
+	}
+	#divPop {
+		position: absolute; 
+		display: none; 
+		/*border: 0px solid #000; */
+		background-color: #fff; 
+		overflow: auto;
+		font-size: 14px;
+		border: 1px solid #ff0000;
+	}
+	#divPop .close {
+		text-align: right;
+		color: blue;
+	}
+</style>
+</head>
+<body>
+
+
+<div id="divPop"><div></div></div>
+<textarea id="content" cols="50" rows="5">
+	CSDN（www.csdn.net）<span style="font-family: 'Microsoft Yahei'; font-size: 14px; line-height: 26px;">创立于1999年，是中国最大的开发者服务平台，也是全球最大的中文IT技术社区。拥有5000万注册用户以及60万注册企业及合作伙伴。CSDN定位于企业和开发者的基础需求，拥有知识服务和开发服务两大服务体系，帮助企业、团队及个人实现产品与技术的突破与提升。依托强大的技术团队、领袖级的专家资源及丰富的行业经验，在提升效率、节约成本、加强协作等方面成功服务国内外千余家知名企业。  
+</textarea><br/>
+<input type="text" name="k" id="k" value="" />
+<input type="button" value="查找" onclick="check();" />
+<input type="button" value="重置" onclick="dohide();">
+</span>
+<script>
+	function get(id) {
+		return document.getElementById(id);
+	}
+	var oDivPop = get('divPop');
+	function check() {
+		var key = get('k').value;
+		// console.log(key)
+		if(key == '') {
+			dohide();
+		}
+		else {
+			var reg = new RegExp(key, 'g');
+			var t = get('content');
+			if(reg.test(t.value)) {
+				if(!oDivPop.init) {
+					// console.log(t.offsetLeft)
+					oDivPop.style.left = t.offsetLeft;
+					oDivPop.style.top = t.offsetTop;
+					oDivPop.style.width = t.offsetWidth;
+					oDivPop.style.height = t.offsetHeight;
+
+					oDivPop.firstChild.innerHTML = t.value.replace(reg, '<span class="kw">' + key + '</span>');
+					oDivPop.firstChild.style.display = '';
+				}
+			}
+		}
+	}
+
+	function dohide() {
+		oDivPop.style.display = 'none';
+	}
+</script>
+</body>
+</html>
+<script>
+// function check() {  
+	// var key=$("#k").val();  
+	// if(key=='') {  
+	// 	$("#dvPop").hide();  
+	// } 
+	// else {  
+		// var rx=new RegExp(key,"g");  
+		// var t = $('#content');  
+/*		if(rx.test(t.val())){  
+			var pop=$('#dvPop');  
+			if(!pop.attr('init')) pop.css({left:t.offset().left,top:t.offset().top,width:t.width(),height:t.height()});  
+			pop.find('div:last').html(t.val().replace(rx,'<span class="kw">'+key+'</span>')).end().show();  
+		}*/  
+	// // } 
+// } 
+     
+</script>

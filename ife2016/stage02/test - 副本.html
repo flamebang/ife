@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+  #bottom {
+    list-style-type: none; 
+    /*border: 1px solid #000;*/
+  }
+  .clearfix:after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+  .clearfix {
+    zoom: 1;
+  }
+  #bottom li {
+    float: left; 
+    height: 20px; 
+    padding: 5px 15px; 
+    margin: 0 5px 5px 0; 
+    line-height: 20px; 
+    background-color: #ff0000; 
+    color: #fff;
+  }
+  button {
+    border: none;
+    outline: none;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+<input type="text" id="text" value="">
+<button id="bt1">左侧输入</button>
+<button id="bt2">右侧输入</button>
+<button id="bt3">左侧出</button>
+<button id="bt4">右侧出</button>
+<ul id="bottom" class="clearfix">
+<!--   
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li> -->
+</ul>
+<script type="text/javascript">
+    var arr=[];
+    var strr="";
+    var bottomNum=document.getElementById("bottom");
+    var text=document.getElementById("text");
+    function change() {
+        var bt1=document.getElementById("bt1");
+        var bt2=document.getElementById("bt2");
+        var bt3=document.getElementById("bt3");
+        var bt4=document.getElementById("bt4");
+        bt1.addEventListener('click',function(){
+            arr.unshift(text.value);
+            arrChange();
+        },false);
+        bt2.addEventListener('click',function(){
+            arr.push(text.value);
+            arrChange();
+        },false);
+        bt3.addEventListener('click',function(){
+            arr.shift(text.value);
+            arrChange();
+        },false);
+        bt4.addEventListener('click',function(){
+            arr.pop(text.value);
+            arrChange();
+        },false);
+    }
+    function arrChange(){
+        for(var i=0;i<arr.length;i++){
+                strr+='<li>'+arr[i]+'</li>';
+            }
+        bottomNum.innerHTML=strr;
+        strr="";
+        text.value = '';
+    }
+    function start(){
+        text.addEventListener('blur',function(){
+            if (!(/^\d+$/.test(text.value))) {
+                alert("输入有误");
+                return;
+            }
+        },false);
+        change();
+    }
+    start();
+</script>
+</body>

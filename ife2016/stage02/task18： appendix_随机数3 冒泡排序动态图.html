@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+	ul {
+		list-style: none;
+	}
+	.clearfix:after {
+		display: block;
+		clear: both;
+		content: '';
+	}
+	.clearfix {
+		zoom: 1;
+	}
+	#ul li {
+		float: left;
+		position: relative;
+		width: 20px;
+		height: 300px;
+		margin: 0 10px;
+		font-size: 8px;
+		text-align: center;
+		vertical-align: bottom;
+	}
+	#ul li a {
+		display: block;
+		width: 100%;
+		position: absolute;
+		bottom: 0;
+		color: #fff;
+		background-color: #ff0000;
+		text-decoration: none;
+	}
+</style>
+</head>
+<body>
+<button id="random">随机生成数字</button>
+<button id="bubbSort">冒泡排序</button>
+<ul id="ul" class="clearfix"></ul>
+<script>
+(function () {
+	var get = function (node) {
+	return document.getElementById(node);
+	};
+	var timer = null;
+	var count1 = 0;
+	var count2 = 0;
+	var result = [];
+	var retArr = [];
+	// 冒泡排序（将每次排序后的结果存储到result中，统计排序的次数count1）
+	function  bubbleSort(arr) {
+		for(var i = 0, len = arr.length, n = 0; i < len - 1; i++) {
+		  for(var j = 0; j < len - 1 - i; j++) {
+		  	  if(arr[j] > arr[j+1]) {
+		      var temp = arr[j];
+		      arr[j] = arr[j+1];
+		      arr[j+1] = temp;
+		      result.push(arr.slice(0));
+		      count1++;
+		    }
+		  }
+		}
+		// console.log(count1);
+	}
+
+	// 生成随机数数组（产生数据源）
+	function getRandomArray() {
+		var arr = [];
+		var n = Math.floor(Math.random() * 16 + 20);
+		while(arr.length < n) {
+			var randomNum = Math.floor(Math.random() * 271) + 30;
+			if(arr.indexOf(randomNum) < 0) {
+				arr.push(randomNum);
+			}
+		}
+		return arr;
+	}
+	// 生成随机数数组示意图（设置li高度）
+	function setLi(arr) {
+		var ul = get('ul');
+		var str = '';
+		var len = arr.length;
+		for(var i = 0; i < len; i++) {
+			str += "<li><a href='javascript:void(0);' style=height:" + arr[i] +  'px >' + Math.floor(arr[i]/3) + '</a></li>';
+		}
+		ul.innerHTML = str;
+	}
+	// 冒泡动态图
+	function setChart(arr) {
+		var newArr = result.shift() || [];
+		setLi(newArr);
+		count2++;
+		if(count2 == count1) {
+			clearInterval(timer);
+		}
+	}
+	// 调用setLi函数生成初始化界面
+	function render() {
+		retArr = getRandomArray();
+		setLi(retArr);
+		// console.log(retArr);
+	}
+	// 启用定时器调用setChart函数生成冒泡动态图
+	function dynamicChart() {
+		bubbleSort(retArr);
+		timer = setInterval(function () {
+			setChart(retArr);
+		}, 50);
+	}
+	// 初始化
+	function init() {
+		var rand = get('random');
+		var bubble = get('bubbSort');
+		var compare = get('compSort');
+		var quick = get('quickSort');
+		rand.onclick = render;
+		bubble.onclick = dynamicChart;
+	}
+	init();
+})();
+
+
+
+</script>
+</body>
+</html>

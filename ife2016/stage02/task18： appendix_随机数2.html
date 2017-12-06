@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Document</title>
+<style>
+	ul {
+		list-style: none;
+	}
+	.clearfix:after {
+		display: block;
+		clear: both;
+		content: '';
+	}
+	.clearfix {
+		zoom: 1;
+	}
+	#ul li {
+		float: left;
+		position: relative;
+		padding: 0 5px;
+		margin: 0 10px;
+		background-color: #ff0000;
+		color: #fff;
+	}
+</style>
+</head>
+<body>
+<button id="random">随机生成数字</button>
+<button id="sort">排序</button>
+<ul id="ul" class="clearfix"></ul>
+<script>
+var get = function (node) {
+return document.getElementById(node);
+};
+var timer = null;
+// 生成随机数数组示意图
+function setLi1(arr) {
+	console.log('arr:  ' + arr);
+	var ul = get('ul');
+	var str = '';
+	var len = arr.length;
+	for(var i = 0; i < len; i++) {
+		str += "<li style=height:" + arr[i] +  'px >' + Math.floor(arr[i]/2) + '</li>';
+	}
+	ul.innerHTML = str;
+}
+// 生成随机数数组
+function getRandomArray() {
+	var arr = [];
+	while(arr.length < 10) {
+		var randomNum = Math.floor(Math.random() * 181) + 20;
+		if(arr.indexOf(randomNum) < 0) {
+			arr.push(randomNum);
+		}
+	}
+	return arr;
+}
+// 设置li
+var count2 = 0;
+function setLi(arr) {
+	var ul = get('ul');
+	var str = '';
+	var len = arr.length;
+	var newArr = result.shift() || [];
+	for(var i = 0; i < len; i++) {
+		str += "<li style=height:" + newArr[i] +  'px >' + Math.floor(newArr[i]/2) + '</li>';
+	}
+	ul.innerHTML = str;
+	count2++;
+	console.log(count2);
+	if(count2 == count1) {
+		clearInterval(timer);
+	}
+}
+
+function render() {
+	var arr = getRandomArray();
+	console.log(arr);
+	setLi1(arr);
+	return arr;
+}
+function dynamicChart() {
+	var arr = render();
+	bubbleSort(arr);
+	timer = setInterval(function () {
+		setLi(arr);
+	}, 500);
+}
+// 初始化
+function init() {
+	var rand = get('random');
+	var sort = get('sort');
+	rand.onclick = render;
+	sort.onclick = dynamicChart;
+}
+
+init();
+
+// 冒泡排序
+var count1 = 0;
+var result = [];
+function  bubbleSort(arr) {
+	for(var i = 0, len = arr.length, n = 0; i < len - 1; i++) {
+	  for(var j = 0; j < len - 1 - i; j++) {
+	  	  if(arr[j] > arr[j+1]) {
+	      var temp = arr[j];
+	      arr[j] = arr[j+1];
+	      arr[j+1] = temp;
+	      result.push(arr.slice(0));
+	      count1++;
+	    }
+	  }
+	}
+}
+
+</script>
+</body>
+</html>

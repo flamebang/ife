@@ -3,6 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <title></title>
+<style>
+  #aqi-display {
+    background-color: #FFD800;
+  }
+</style>
 </head>
 <body>
 
@@ -13,20 +18,17 @@
   
 <script>
 (function() {
-  /*	
-  在注释下方写下代码
-  给按钮button绑定一个点击事件
-  在事件处理函数中
-  获取aqi-input输入的值，并显示在aqi-display中
-  */
   var oBtn = document.getElementById('button');
-  var oInput = document.getElementById('aqi-input');
-  var oSpan = document.getElementById('aqi-display');
-  oBtn.onclick = function() {
-  	if(oInput.value != oInput.defaultValue) {
-  		oSpan.innerHTML = oInput.value;
-  	}
+  // 输入内容
+  function input() {
+    var oInput = document.getElementById('aqi-input');
+    var oSpan = document.getElementById('aqi-display'); 
+    if(oInput.value != oInput.defaultValue) {
+      oSpan.innerHTML = oInput.value;
+    } 
   }
+
+  oBtn.onclick = input;
 
 })();
 </script>

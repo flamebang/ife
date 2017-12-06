@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+</head>
+<body>
+
+<div id="wrap">
+	<div id="box">test</div>
+	hello world
+	<div>你好!</div>
+</div>
+<script>
+// node.nextSibling 可以方便找到下一个结点, 但这个结点不一定是元素节点
+/* 
+** getNextNode(node)
+*查找node节点的下一个元素节点 node为当前节点
+*/
+
+// 元素节点：nodeType为1
+// 属性节点：nodeType为2
+// 文本节点：nodeType为3
+
+var oBox = document.getElementById('box');
+console.log(oBox.nextSibling); // hello world
+console.log(getNextNode(oBox)); // <div>你好!</div>
+function getNextNode(node) {
+	if(!node.nextSibling) return null;
+	var nextNode = node.nextSibling;
+	if(nextNode.nodeType === 1) {
+		return nextNode;
+	}
+	return getNextNode(node.nextSibling);
+}
+
+</script>
+<a href="http://blog.csdn.net/u010003835/article/details/51346264">JavaScript_查找指定节点之后的下一个元素节点_getNextElement(node)_JavaScript扩展</a>
+</body>
+</html>
+
+
+
+
+
+
+
+

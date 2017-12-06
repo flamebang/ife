@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title></title>
+<style>
+  #ul {
+    list-style-type: none; 
+    /*border: 1px solid #000;*/
+  }
+  .clearfix:after {
+    display: block;
+    clear: both;
+    content: '';
+  }
+  .clearfix {
+    zoom: 1;
+  }
+  #ul li {
+    float: left; 
+    height: 20px; 
+    padding: 5px 15px; 
+    margin: 0 5px 5px 0; 
+    line-height: 20px; 
+    background-color: #ff0000; 
+    color: #fff;
+  }
+  button {
+    border: none;
+    outline: none;
+    background-color: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+  }
+</style>
+</head>
+<body>
+
+
+<input type="text" id="txt" value="">
+<button id="leftInput">左侧输入</button>
+<button id="rightInput">右侧输入</button>
+<button id="leftOut">左侧出</button>
+<button id="rightOut">右侧出</button>
+<ul id="ul" class="clearfix">
+<!--   
+  <li>1</li>
+  <li>2</li>
+  <li>3</li>
+  <li>4</li> -->
+</ul>
+<script>
+(function() {
+  var get = function (node) {
+    return document.getElementById(node);
+  };
+  var addHandler = function (elem, eventType, handler) {
+    if(elem.addEventListener) {
+      elem.addEventListener(eventType, handler, false);
+      return true;
+    }
+    else if(elem.attachEvent) {
+      elem.attachEvent('on' + eventType, function () {
+        handler.apply(elem);
+      });
+      return true;
+    }
+    return false;
+  };
+  var isNum = function (str) {
+    if(str != null && str != '') {
+      return !isNaN(str);
+    }
+    return false;
+  };
+  // 获取子元素在父元素中的位置
+  var getChildrenIndex = function (elem) {
+    // IE is simplest and fastest 
+    if(elem.sourceIndex) {
+      return elem.sourceIndex - elem.parentNode.sourceIndex - 1;
+    }
+    // other browsers 
+    var i = 0; 
+    while(elem = elem.previousElementSibling) {
+      i++;
+    }
+    return i;
+  }
+
+  var arr = [];
+  var oTxt = get('txt');
+  var oUl = get('ul');
+  function change() {
+    var li = get('leftInput');
+    var ri = get('rightInput');
+    var lo = get('leftOut');
+    var ro = get('rightOut');
+    addHandler(li, 'click', function() {
+      addDir('li');
+    });
+    addHandler(ri, 'click', function() {
+      addDir('ri');
+    });
+    addHandler(lo, 'click', function() {
+      removeDir('lo');
+    });
+    addHandler(ro, 'click', function() {
+      removeDir('ro');
+    });
+    addHandler(oUl, 'click', removeQue);
+  }
+
+  // 添加子元素
+  function addDir(dirIo) {
+    var val = txt.value;
+    var oLi = document.createElement('li');
+    var textNode = document.createTextNode(val);
+    oLi.appendChild(textNode);
+
+    if(val.length == 0) {
+      alert('输入不能为空！');
+      return;
+    }
+    if(!isNum(val)) {
+      alert('请输入数字!');
+      return;
+    }
+
+    if(dirIo === 'li') {
+      oUl.insertBefore(oLi, oUl.childNodes[0]);
+    }
+    else if(dirIo === 'ri') {
+      oUl.appendChild(oLi); 
+    }
+    oTxt.value = '';
+  }
+  // 删除子元素
+  function removeDir(dirIo) {
+    var txtCont2 = oUl.lastChild.innerHTML;
+    var txtCont1 = oUl.firstChild.innerHTML;
+    if(dirIo === 'lo') {
+      oUl.firstChild && oUl.removeChild(oUl.firstChild);
+      alert(txtCont1);
+    }
+    else if(dirIo === 'ro') {
+      oUl.lastChild && oUl.removeChild(oUl.lastChild);
+      alert(txtCont2);
+    }   
+  }
+
+  // 点击队列中任何一个元素，则该元素会被从队列中删除(点击的子元素是父元素的第？个)
+  function removeQue(e) {
+    var e = e || window.event;
+    var elemTarget = e.target || e.sreElement;
+    var index = getChildrenIndex(elemTarget);
+    return index >= 0 ? oUl.removeChild(oUl.childNodes[index]) : false;
+  }
+  change();
+})();
+
+
+</script>
+</body>
+</html>
